@@ -1,0 +1,35 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< org.greenleaf:sample >------------------------
+[INFO] Building sample 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ sample ---
+[INFO] Deleting /Users/davy/CODE_DIRECTORY/agent/sample/target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ sample ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/davy/CODE_DIRECTORY/agent/sample/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ sample ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /Users/davy/CODE_DIRECTORY/agent/sample/target/classes
+[INFO] 
+[INFO] --- exec-maven-plugin:1.2.1:exec (default-cli) @ sample ---
+====premain exe args="传递的参数"
+/Users/davy/CODE_DIRECTORY/agent/sample/App.class
+This code is inserted before method main
+Hello World1!
+/Users/davy/CODE_DIRECTORY/agent/sample/TransClass.class
+This code is inserted before constructor org/greenleaf/sample/bean/TransClass
+This code is inserted after constructor org/greenleaf/sample/bean/TransClass
+This code is inserted before method getNumber
+This code is inserted after method getNumber
+return value is 2
+This code is inserted after method main
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.482 s
+[INFO] Finished at: 2018-08-09T16:42:54+08:00
+[INFO] ------------------------------------------------------------------------
