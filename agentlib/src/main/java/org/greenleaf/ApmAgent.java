@@ -6,6 +6,8 @@ import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.LoaderClassPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -17,6 +19,8 @@ import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 
 public class ApmAgent implements ClassFileTransformer {
+
+    private static Logger logger = LoggerFactory.getLogger(ApmAgent.class);
 
     @Override
     public byte[] transform(ClassLoader loader, String className,
@@ -31,42 +35,40 @@ public class ApmAgent implements ClassFileTransformer {
             CtClass cls = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
             CtConstructor[] ccs = cls.getDeclaredConstructors();
             for (CtConstructor cc : ccs) {
-                //构造函数方法体开始时添加的代码
                 String codeStrBefore = "System.out.println(\"This code is inserted before constructor "+className+"\");";
-                //构造函数方法体结束前添加的代码
                 String codeStrAfter = "System.out.println(\"This code is inserted after constructor "+className+"\");";
                 cc.insertBeforeBody((codeStrBefore));
                 cc.insertAfter(codeStrAfter, true);
             }
 
+            long startTime = System.currentTimeMillis();
+            System.out.println("time cost " + (System.currentTimeMillis() - startTime));
+
             CtMethod[] methods = cls.getDeclaredMethods();
             for (CtMethod method : methods) {
-                String codeStrBefore = "System.out.println(\"This code is inserted before method "+method.getName()+"\");";
-                String codeStrAfter = "System.out.println(\"This code is inserted after method "+method.getName()+"\");";
+                String codeStrBefore = "long startTime = System.currentTimeMillis();";
+                String codeStrAfter = "System.out.println(\"time cost \" + (System.currentTimeMillis() - startTime));";
+                System.out.println(codeStrBefore);
+                System.out.println(codeStrAfter);
                 method.insertBefore(codeStrBefore);
                 method.insertAfter(codeStrAfter, true);
             }
 
             File file = new File(cls.getSimpleName() + ".class");
-            System.out.println(file.getAbsolutePath());
             try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                 fileOutputStream.write(cls.toBytecode());
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return cls.toBytecode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("", e);
         }
         return null;
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.println("====premain exe args=" + agentArgs);
+        logger.info("premain exe args : {}" + agentArgs);
         inst.addTransformer(new ApmAgent());
     }
 }

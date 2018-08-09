@@ -1,15 +1,18 @@
 package org.greenleaf.sample;
 
-import org.greenleaf.sample.bean.TransClass;
+import org.greenleaf.sample.bean.BusManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hello world!
  */
 public class App {
 
+    private static Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) {
-        System.out.println("Hello World1!");
-        int um = new TransClass().getNumber();
-        System.out.println("return value is " + um);
+        logger.info("Hello World");
+        logger.info("return value is {} ", new BusManager().getNumber());
     }
 }
